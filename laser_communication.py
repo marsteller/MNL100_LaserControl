@@ -93,10 +93,51 @@ class LaserCommunicationHandler(object):
         #define more stuff
         
         
+        self.flag_byte_1 = 4
+        #flag_byte_2 = reply[2:4]   # unused
+        self.flag_byte_3 = 0
+        self.quantity = 0
+        self.frequency = 0
+        self.hv = 0
+        self.energy = 0
+        self.flag_byte_4 = 0
+        self.flag_byte_5 = 0
+        
+        self.internal_voltage = 0
+        self.temperature1 = 0
+        self.temperature2 = 0
+        self.energy = 0
+        self.quantity_counter = 0
+        self.shot_counter_value = 0
+        self.stepper_mode = 0
+        self.stepper_setpoint = 0
+        self.actual_stepper_position = 0
+        self.actual_transmission = 0
+        
+        self.flag_bytes_1 = {0:"Shutter is Open", 2:"Laser is Ready for Operation", 3:"Laser Standby", 
+                      4:"LaserMode: Off", 5:"LaserMode: Repetition", 6:"LaserMode: Burst", 7:"LaserMode: External triggering"}
+        self.flag_bytes_3 = {0:"Service Mode activated", 5:"EEPROM error", 6:"Watchdog Reset occurred"}
+        
+        
+        self.flag_bytes_4 = {0:"Static error", 1:"Laser head chamber open", 2:"External interlock circuit open (Remote)", 
+                        3:"Temperature too high (> 60°C)", 4:"Temperature 1 too high (> 48°C) ",
+                        5:"Temperature 2 too high (> 48°C) warning", 6:"Energy monitor error occurred"}
+        
+        self.flag_bytes_5 = {0:"Operation error: Laser must be switched off", 3:"High voltage supply error or temperature error",
+                        4:"Temperature error 1", 5:"Temperature error 2", 6:"Power switch is damaged", 7:"Power supply is too weak"}
+        
+        self.release_bytes = {0:"Shutter control is not supported", 1:"Attenuation module is supported",
+                         3:"High voltage control is supported", 6:"Energy measuring is supported"}
+        
+        self.type_bytes_1 = {}
+        
         self.energy_values = []
         
         
         self.shutter_status = 0
+        
+        
+        
         
         
     def _calculate_frame_check_squence(self, telegram):
@@ -148,6 +189,8 @@ class LaserCommunicationHandler(object):
         
         if response_type != None:
             eval("self._interprete_{}(cleaned_reply)".format(response_type))
+            
+            return response_type
         
     def _interprete_GetShortStatus(self, reply):
         cleaned_reply = reply[1:]
@@ -159,21 +202,17 @@ class LaserCommunicationHandler(object):
         return response_dict[cleaned_reply]
     
     def _interprete_GetStat7(self, reply):
-        cleaned_reply = cleaned_reply[2:]
+        cleaned_reply = reply[2:]
         
-        flag_byte_1 = int(cleaned_reply[:2],16)
+        self.flag_byte_1 = int(cleaned_reply[:2],16)
         #flag_byte_2 = reply[2:4]   # unused
-        flag_byte_3 = int(cleaned_reply[4:6],16)
-        quantity = int(cleaned_reply[6:10],16)
-        frequency = int(cleaned_reply[10:12],16)
-        hv = int(cleaned_reply[12:14],16)
-        energy = int(cleaned_reply[18:22],16)
+        self.flag_byte_3 = int(cleaned_reply[4:6],16)
+        self.quantity = int(cleaned_reply[6:10],16)
+        self.frequency = int(cleaned_reply[10:12],16)
+        self.hv = int(cleaned_reply[12:14],16)
+        self.energy = int(cleaned_reply[18:22],16)
         
-        flag_bytes_1 = {0:"Shutter is Open", 2:"Laser is Ready for Operation", 3:"Laser Standby", 
-                      4:"LaserMode: Off", 5:"LaserMode: Repetition", 6:"LaserMode: Burst", 7:"LaserMode: External triggering"}
-        flag_bytes_3 = {0:"Service Mode activated", 5:"EEPROM error", 6:"Watchdog Reset occurred"}
-        
-        if flag_byte_1 == 0:
+        if self.flag_byte_1 == 0:
             self.shutter_status = 1
         else:
             self.shutter_status = 0
@@ -182,31 +221,27 @@ class LaserCommunicationHandler(object):
     def _interprete_GetStat8(self, reply):
         cleaned_reply = reply[2:]
         
-        flag_byte_4 = int(cleaned_reply[:2],16)
-        flag_byte_5 = int(cleaned_reply[2:4],16)
+        self.flag_byte_4 = int(cleaned_reply[:2],16)
+        self.flag_byte_5 = int(cleaned_reply[2:4],16)
         
-        internal_voltage = int(cleaned_reply[4:6],16)
-        temperature1 = int(cleaned_reply[6:8],16)
-        temperature2 = int(cleaned_reply[8:10],16)
-        energy = int(cleaned_reply[10:14],16)
-        quantity_counter = int(cleaned_reply[14:18],16)
-        shot_counter_value = int(cleaned_reply[18:26],16)
+        self.internal_voltage = int(cleaned_reply[4:6],16)
+        self.temperature1 = int(cleaned_reply[6:8],16)
+        self.temperature2 = int(cleaned_reply[8:10],16)
+        self.energy = int(cleaned_reply[10:14],16)
+        self.quantity_counter = int(cleaned_reply[14:18],16)
+        self.shot_counter_value = int(cleaned_reply[18:26],16)
         
-        
-        flag_bytes_4 = {0:"Static error", 1:"Laser head chamber open", 2:"External interlock circuit open (Remote)", 
-                        3:"Temperature too high (> 60°C)", 4:"Temperature 1 too high (> 48°C) ",
-                        5:"Temperature 2 too high (> 48°C) warning", 6:"Energy monitor error occurred"}
-        
-        flag_bytes_5 = {0:"Operation error: Laser must be switched off", 3:"High voltage supply error or temperature error",
-                        4:"Temperature error 1", 5:"Temperature error 2", 6:"Power switch is damaged", 7:"Power supply is too weak"}
+        print(self.internal_voltage)
+        print(self.temperature1)
+        print(self.temperature2)
         
     def _interprete_GetSernum(self, reply):
         cleaned_reply = reply[2:]
         
-        stepper_mode = int(cleaned_reply[:2],16)
-        stepper_setpoint = int(cleaned_reply[2:6],16)
-        actual_stepper_position = int(cleaned_reply[6:10],16)
-        actual_transmission = int(cleaned_reply[10:12],16)/2
+        self.stepper_mode = int(cleaned_reply[:2],16)
+        self.stepper_setpoint = int(cleaned_reply[2:6],16)
+        self.actual_stepper_position = int(cleaned_reply[6:10],16)
+        self.actual_transmission = int(cleaned_reply[10:12],16)/2
         
     def _interprete_GetAttenuatorStatus(self, reply):
         cleaned_reply = reply[2:]
@@ -231,37 +266,29 @@ class LaserCommunicationHandler(object):
     def _interprete_GetVer3(self, reply):
         cleaned_reply = reply[2:]
         
-        main_rev_byte = int(cleaned_reply[:2],16)
-        release_byte = int(cleaned_reply[2:4],16)
-        type_byte_1 = int(cleaned_reply[4:6],16)
-        type_byte_2 = int(cleaned_reply[6:8],16)
-        program_version = cleaned_reply[8:16],16
+        self.main_rev_byte = int(cleaned_reply[:2],16)
+        self.release_byte = int(cleaned_reply[2:4],16)
+        self.type_byte_1 = int(cleaned_reply[4:6],16)
+        self.type_byte_2 = int(cleaned_reply[6:8],16)
+        self.program_version = cleaned_reply[8:16],16
         following_chars = int(cleaned_reply[16:18],16)
-        laser_type = cleaned_reply[18:18+following_chars]
-        
-        release_bytes = {0:"Shutter control is not supported", 1:"Attenuation module is supported",
-                         3:"High voltage control is supported", 6:"Energy measuring is supported"}
-        
-        type_bytes_1 = {}
-        
-        """
-        Needs to be understood
-        """
-        
+        self.laser_type = cleaned_reply[18:18+following_chars]
         
         
     
 class LaserCommunicationThread(QThread):
     
     
-    recieved_command_signal = pyqtSignal()
+    recieved_reply_signal = pyqtSignal(str)
+    update_main_window_signal = pyqtSignal()
     
     
     def __init__(self, main_window, com_port="/dev/ttyUSB0"):
         QThread.__init__(self)
         
         self.main_window = main_window
-        self.recieved_command_signal.connect(self.main_window.display_laser_status)
+        self.recieved_reply_signal.connect(self.process_recieved_message)
+        self.update_main_window_signal.connect(self.main_window.display_laser_status)
         
         #serial connection parameters
         
@@ -284,6 +311,7 @@ class LaserCommunicationThread(QThread):
         self.recieved_messages = []
         self.outgoing_messages = []
         self.message_limit = 1000
+        self.status_poll_interval = 0.5
         
         
     
@@ -291,14 +319,18 @@ class LaserCommunicationThread(QThread):
         
         print("Communication Thread started")
         
+        self.last_status_poll_time = datetime.datetime.utcnow()
+        
         while(self.alive):
             
             
             read_timeout_counter = 10
+            
             while(self._waiting_bytes() != 0 and read_timeout_counter > 0):
                 recieved_message = self.serial_connection.read_until(self.handler.end_delimiter)
                 
                 self.recieved_messages.append(recieved_message)
+                self.recieved_reply_signal.emit(recieved_message)
                 
                 if len(self.recieved_messages) > self.message_limit:
                     self.recieved_messages.pop(0)
@@ -311,7 +343,11 @@ class LaserCommunicationThread(QThread):
                 self.serial_connection.write(outgoing_message)
     
             time.sleep(0.005)
-            self.recieved_command_signal.emit()
+            
+            now = datetime.datetime.utcnow()
+            if (now - self.last_status_poll_time).total_seconds() > self.status_poll_interval:
+                self.last_status_poll_time = now
+                self.QueryStatus()
         
         
         print("Communication Thread ended")
@@ -329,6 +365,12 @@ class LaserCommunicationThread(QThread):
     
         return incoming_byts_in_buffer
     
+    def process_recieved_message(self, message):
+        respone_type = self.handler._interprete_response(message)
+        
+        print("Recieved:")
+        print(respone_type)
+        self.update_main_window_signal.emit()
     
     def execute_command(self, command_string, command_parameter=None):
         print("Executing: {}".format(command_string))
@@ -344,11 +386,9 @@ class LaserCommunicationThread(QThread):
     
     def OpenShutter(self):
         self.execute_command("SetShutter", 1)
-        self.handler.shutter_status = 1
         
     def CloseShutter(self):
         self.execute_command("SetShutter", 0)
-        self.handler.shutter_status = 0
     
     def RepetitionOn(self):
         self.execute_command("RepetitionOn")
@@ -374,6 +414,10 @@ class LaserCommunicationThread(QThread):
             self.OpenShutter()
         else:
             self.CloseShutter()
+            
+    def QueryStatus(self):
+        self.execute_command("GetStat8")
+        
     
 
 import datetime
@@ -383,28 +427,52 @@ class DummySerial(object):
         self.last_called = datetime.datetime.utcnow()
         self.buffer = ""
         self.handler = handler
+        self.shutter_status = 0
     @property
     def in_waiting(self):
+        """
         s = "<@!UT040003000A14320000000088\r"
         
         delta_t = (datetime.datetime.utcnow() - self.last_called).total_seconds()
         if delta_t > 0.5:
             self.buffer += s
             self.last_called = datetime.datetime.utcnow()
+        """
         return len(self.buffer)
             
     def read_until(self, char):
         index = self.buffer.find(char)+1
         reply = self.buffer[:index]
         self.buffer = self.buffer[index:]
+        print("Reply:")
+        print(reply)
         return reply
     
     def write(self, out):
         print("Output:")
         print(out)
         
+        if out == self.handler.compose_command("SetShutter", 1):
+            self.shutter_status = 1
+        if out == self.handler.compose_command("SetShutter", 0):
+            self.shutter_status = 0
+        
+        if out == self.handler.compose_command("GetStat7"):
+            if self.shutter_status == 0:
+                self.buffer += "<@!UT040003000A14320000000088\r"
+            elif self.shutter_status == 1:
+                self.buffer += "<@!UT000003000A14320000000084\r"
+        
+        if out == self.handler.compose_command("GetStat8"):
+            temperature = 24 + np.random.random() * 20
+            print(int(temperature))
+            print(hex(int(temperature)))
+            message = "<@!UU000000{}22000000000001154C".format(hex(int(temperature))[2:].upper())
+            fcs = self.handler._calculate_frame_check_squence(message)
+            self.buffer += message + fcs +"\r"
+        
 
 if __name__ == "__main__":
     
-    t = LaserCommunicationThread()
-    t.start()
+    com = LaserCommunicationHandler()
+    print(com._calculate_frame_check_squence("<@!UT040003000A143200000000"))

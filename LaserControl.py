@@ -66,6 +66,9 @@ class LaserControl(QMainWindow):
             self.ui.shutter_status_led.setChecked(True)
         else:
             self.ui.shutter_status_led.setChecked(False)
+        
+        print(self.laser_communication_thread.handler.temperature1)
+        self.ui.temperature_bar.setValue(self.laser_communication_thread.handler.temperature1)
             
 
 if __name__ == "__main__":
