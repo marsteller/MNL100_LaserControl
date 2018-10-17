@@ -16,10 +16,6 @@ import numpy as np
 python_version = float(sys.version_info.major)
 serial_version = float(serial.__version__)
 
-print(python_version)
-print(serial_version)
-
-
 class LaserCommunicationHandler(object):
     
     
@@ -143,7 +139,9 @@ class LaserCommunicationHandler(object):
         
     def _calculate_frame_check_squence(self, telegram):
         
-        fcs = hex(sum(bytearray(telegram.encode("ASCII"))) % 256).upper()[2:]
+        encoded_telegram = telegram.encode("ASCII")
+        print(encoded_telegram)
+        fcs = hex(sum(bytearray(encoded_telegram)) % 256).upper()[2:]
         return fcs
         
     
@@ -171,9 +169,12 @@ class LaserCommunicationHandler(object):
         
         cleaned_reply = reply.rstrip(self.end_delimiter)
         reply_fcs = cleaned_reply[-2:]
-        
+        print(reply)
+        print(reply_fcs)
+        print(cleaned_reply[:-2])
         
         calculated_reply_fcs = self._calculate_frame_check_squence(cleaned_reply[:-2])
+        print(calculated_reply_fcs)
         
         if reply_fcs != calculated_reply_fcs:
             raise IOError()
@@ -302,17 +303,18 @@ class LaserCommunicationThread(QThread):
         self.stopbits = 1
         self.rtscts = 1
         self.write_timeout = 5
-        self.timeout = 5
+        self.timeout = 0.2
         
         self.used_com_port = None
         if com_port != None:
             print("Using specified com port: {}".format(com_port))
-            """
+            
             self.serial_connection = serial.Serial(com_port, self.baud_rate, parity=self.parity, 
                                                        bytesize=self.bytesize, stopbits=self.stopbits,
-                                                       rtscts=self.rtscts)
-            """
+                                                       rtscts=self.rtscts, timeout=self.timeout, write_timeout=self.write_timeout)
+            
             self.used_com_port = com_port
+
         else:
             print("No com port specified, trying to detect Laser...")
             for port in self.available_comports:
@@ -354,7 +356,7 @@ class LaserCommunicationThread(QThread):
         if self.used_com_port == None:
             raise serial.SerialException("Laser not found over serial interface") 
         
-        self.serial_connection = DummySerial(self.handler)
+        #self.serial_connection = DummySerial(self.handler)
         
         self.command_queue = []
     
@@ -362,29 +364,36 @@ class LaserCommunicationThread(QThread):
         self.recieved_messages = []
         self.outgoing_messages = []
         self.message_limit = 1000
-        self.status_poll_interval = 0.5
-        
+        self.status_poll_interval = 1.0
+
+        outgoing_message = "#!@gEB\r"
+        self.serial_connection.write(outgoing_message.encode("ASCII"))
+	
         
     
     def run(self):
         
         print("Communication Thread started")
+        time.sleep(2.0)
         
         self.last_status_poll_time = datetime.datetime.utcnow()
         
         while(self.alive):
-            
-            
             read_timeout_counter = 10
             
             while(self._waiting_bytes() != 0 and read_timeout_counter > 0):
-                recieved_message = self.serial_connection.read_until(self.handler.end_delimiter).decode("ASCII")
-                
-                self.recieved_messages.append(recieved_message)
-                self.recieved_reply_signal.emit(recieved_message)
-                
-                if len(self.recieved_messages) > self.message_limit:
-                    self.recieved_messages.pop(0)
+                recieved_message = self.serial_connection.read_until(self.handler.end_delimiter)
+                print(recieved_message)
+                recieved_message = recieved_message.decode("ASCII")
+                messages = recieved_message.split("\r")
+                for m in messages:
+                        if m == "":
+                               continue
+                        self.recieved_messages.append(m)
+                        self.recieved_reply_signal.emit(m)
+
+                        if len(self.recieved_messages) > self.message_limit:
+                               self.recieved_messages.pop(0)
                     
                 read_timeout_counter -= 1
             
@@ -392,8 +401,9 @@ class LaserCommunicationThread(QThread):
                 outgoing_message = self.outgoing_messages.pop(0)
                 
                 self.serial_connection.write(outgoing_message.encode("ASCII"))
+                print("Writing: {}".format(outgoing_message))
     
-            time.sleep(0.005)
+            time.sleep(0.020)
             
             now = datetime.datetime.utcnow()
             if (now - self.last_status_poll_time).total_seconds() > self.status_poll_interval:
@@ -467,6 +477,7 @@ class LaserCommunicationThread(QThread):
             self.CloseShutter()
             
     def QueryStatus(self):
+        self.execute_command("GetShortStatus")
         self.execute_command("GetStat7")
         self.execute_command("GetStat8")
         
@@ -527,6 +538,7 @@ class DummySerial(object):
         
 
 if __name__ == "__main__":
-    
-    com = LaserCommunicationHandler()
-    print(com._calculate_frame_check_squence("<@!UT040003000A143200000000"))
+	handler = LaserCommunicationHandler()
+	message = "<@!UU0000D61E22000000000045F2ED"
+	print(handler._calculate_frame_check_squence(message))
+	

@@ -58,7 +58,7 @@ class LaserControl(QMainWindow):
         
         
     def repetition_rate_changed(self):
-        self.set_repetition_rate_signal.emit(self.ui.set_repetition_rate_signal.value())
+        self.set_repetition_rate_signal.emit(self.ui.repetition_rate_spinBox.value())
     def repetition_quantity_changed(self):
         self.set_repetition_quantity_signal.emit(self.ui.repetition_quantity_spinBox.value())
         
