@@ -1,0 +1,204 @@
+--------------------
+Sending command:
+#!@WDBRecieved Reply:
+<@!W0054
+--------------------
+Sending command:
+#!@UT2DRecieved Reply:
+<@!UT04000200320A64000000008C
+--------------------
+Sending command:
+#!@UU2ERecieved Reply:
+<@!UU0000001E2500000000004602E66B
+--------------------
+Sending command:
+#!@gEBRecieved Reply:
+
+--------------------
+Sending command:
+#!@WDBRecieved Reply:
+<@!W0054
+--------------------
+Sending command:
+#!@UT2DRecieved Reply:
+<@!UT04000200320A64000000008C
+--------------------
+Sending command:
+#!@UU2ERecieved Reply:
+<@!UU0000191E2500000000004602E675
+--------------------
+Sending command:
+#!@z12FRecieved Reply:
+
+--------------------
+Sending command:
+#!@WDBRecieved Reply:
+<@!W0054
+--------------------
+Sending command:
+#!@UT2DRecieved Reply:
+<@!UT05000200320A64000000008D
+--------------------
+Sending command:
+#!@UU2ERecieved Reply:
+<@!UU0000D61E2500000000004602E685
+--------------------
+Sending command:
+#!@z02ERecieved Reply:
+
+--------------------
+Sending command:
+#!@WDBRecieved Reply:
+<@!W0054
+--------------------
+Sending command:
+#!@UT2DRecieved Reply:
+<@!UT04000200320A64000000008C
+--------------------
+Sending command:
+#!@UU2ERecieved Reply:
+<@!UU0000D61E2500000000004602E685
+--------------------
+Sending command:
+#!@hECRecieved Reply:
+
+--------------------
+Sending command:
+#!@WDBRecieved Reply:
+<@!W0357
+--------------------
+Sending command:
+#!@UT2DRecieved Reply:
+<@!UT1C000200320A64000000009C
+--------------------
+Sending command:
+#!@UU2ERecieved Reply:
+<@!UU0000D41E2500000000004602FB90
+--------------------
+Sending command:
+#!@z12FRecieved Reply:
+
+--------------------
+Sending command:
+#!@WDBRecieved Reply:
+<@!W0357
+--------------------
+Sending command:
+#!@UT2DRecieved Reply:
+<@!UT1D000200320A64000000009D
+--------------------
+Sending command:
+#!@UU2ERecieved Reply:
+<@!UU0000D41E25000000000046031771
+--------------------
+Sending command:
+#!@z02ERecieved Reply:
+
+--------------------
+Sending command:
+#!@WDBRecieved Reply:
+<@!W0357
+--------------------
+Sending command:
+#!@UT2DRecieved Reply:
+<@!UT1C000200320A64000000009C
+--------------------
+Sending command:
+#!@UU2ERecieved Reply:
+<@!UU0000D51E25000000000046033370
+--------------------
+Sending command:
+#!@iEDRecieved Reply:
+
+--------------------
+Sending command:
+#!@WDBRecieved Reply:
+<@!W0155
+--------------------
+Sending command:
+#!@UT2DRecieved Reply:
+<@!UT0C000200320A64000000009B
+--------------------
+Sending command:
+#!@UU2ERecieved Reply:
+<@!UU0000D61E25000000000046033B80
+--------------------
+Sending command:
+#!@jEERecieved Reply:
+
+--------------------
+Sending command:
+#!@WDBRecieved Reply:
+<@!W0357
+--------------------
+Sending command:
+#!@UT2DRecieved Reply:
+<@!UT2C000200320A64000000009D
+--------------------
+Sending command:
+#!@UU2ERecieved Reply:
+<@!UU0000D51E250000001D0046035084
+--------------------
+Sending command:
+#!@z12FRecieved Reply:
+
+--------------------
+Sending command:
+#!@WDBRecieved Reply:
+<@!W0357
+--------------------
+Sending command:
+#!@UT2DRecieved Reply:
+<@!UT2D000200320A64000000009E
+--------------------
+Sending command:
+#!@UU2ERecieved Reply:
+<@!UU0000D41E25000000010046036C83
+--------------------
+Sending command:
+#!@z02ERecieved Reply:
+
+--------------------
+Sending command:
+#!@WDBRecieved Reply:
+<@!W0155
+--------------------
+Sending command:
+#!@UT2DRecieved Reply:
+<@!UT0C000200320A64000000009B
+--------------------
+Sending command:
+#!@UU2ERecieved Reply:
+<@!UU0000D61E25000000000046036D85
+--------------------
+Sending command:
+#!@iEDRecieved Reply:
+
+--------------------
+Sending command:
+#!@WDBRecieved Reply:
+<@!W0155
+--------------------
+Sending command:
+#!@UT2DRecieved Reply:
+<@!UT0C000200320A64000000009B
+--------------------
+Sending command:
+#!@UU2ERecieved Reply:
+<@!UU0000D61E25000000000046036D85
+--------------------
+Sending command:
+#!@XDCRecieved Reply:
+
+--------------------
+Sending command:
+#!@WDBRecieved Reply:
+<@!W0054
+--------------------
+Sending command:
+#!@UT2DRecieved Reply:
+<@!UT04000200320A64000000008C
+--------------------
+Sending command:
+#!@UU2ERecieved Reply:
+<@!UU0000141E25000000000046036D70

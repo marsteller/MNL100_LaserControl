@@ -140,7 +140,6 @@ class LaserCommunicationHandler(object):
     def _calculate_frame_check_squence(self, telegram):
         
         encoded_telegram = telegram.encode("ASCII")
-        print(encoded_telegram)
         fcs = hex(sum(bytearray(encoded_telegram)) % 256).upper()[2:]
         return fcs
         
@@ -538,7 +537,101 @@ class DummySerial(object):
         
 
 if __name__ == "__main__":
-	handler = LaserCommunicationHandler()
-	message = "<@!UU0000D61E22000000000045F2ED"
-	print(handler._calculate_frame_check_squence(message))
+    handler = LaserCommunicationHandler()
+    #serial connection parameters
+        
+    baud_rate = 9600
+    parity = serial.PARITY_NONE
+    bytesize = 8
+    stopbits = 1
+    rtscts = 1
+    write_timeout = 5
+    timeout = 0.2
+        
+    used_com_port = None
+        
+    serial_connection = serial.Serial("/dev/ttyUSB0", baud_rate, parity=parity, 
+                                                   bytesize=bytesize, stopbits=stopbits,
+                                                   rtscts=rtscts, timeout=timeout, write_timeout=write_timeout)
+        
+    outgoing_messages = []
+
+    #serial_connection.write(handler.compose_command("LaserOn").encode("ASCII"))
+    #time.sleep(2)
+    outgoing_messages.append(handler.compose_command("GetShortStatus"))
+    outgoing_messages.append(handler.compose_command("GetStat7"))
+    outgoing_messages.append(handler.compose_command("GetStat8"))    
+
+    outgoing_messages.append(handler.compose_command("LaserOn"))
+    outgoing_messages.append(handler.compose_command("GetShortStatus"))
+    outgoing_messages.append(handler.compose_command("GetStat7"))
+    outgoing_messages.append(handler.compose_command("GetStat8"))    
+
+    outgoing_messages.append(handler.compose_command("SetShutter", 1))
+    outgoing_messages.append(handler.compose_command("GetShortStatus"))
+    outgoing_messages.append(handler.compose_command("GetStat7"))
+    outgoing_messages.append(handler.compose_command("GetStat8"))    
+    outgoing_messages.append(handler.compose_command("SetShutter", 0))
+    outgoing_messages.append(handler.compose_command("GetShortStatus"))
+    outgoing_messages.append(handler.compose_command("GetStat7"))
+    outgoing_messages.append(handler.compose_command("GetStat8")) 
+
+    outgoing_messages.append(handler.compose_command("RepetitionOn"))
+    outgoing_messages.append(handler.compose_command("GetShortStatus"))
+    outgoing_messages.append(handler.compose_command("GetStat7"))
+    outgoing_messages.append(handler.compose_command("GetStat8"))    
+
+    outgoing_messages.append(handler.compose_command("SetShutter", 1))
+    outgoing_messages.append(handler.compose_command("GetShortStatus"))
+    outgoing_messages.append(handler.compose_command("GetStat7"))
+    outgoing_messages.append(handler.compose_command("GetStat8"))    
+    outgoing_messages.append(handler.compose_command("SetShutter", 0))
+    outgoing_messages.append(handler.compose_command("GetShortStatus"))
+    outgoing_messages.append(handler.compose_command("GetStat7"))
+    outgoing_messages.append(handler.compose_command("GetStat8")) 
+
+    outgoing_messages.append(handler.compose_command("LaserStop"))
+    outgoing_messages.append(handler.compose_command("GetShortStatus"))
+    outgoing_messages.append(handler.compose_command("GetStat7"))
+    outgoing_messages.append(handler.compose_command("GetStat8"))  
+
+    outgoing_messages.append(handler.compose_command("BurstOn"))
+    outgoing_messages.append(handler.compose_command("GetShortStatus"))
+    outgoing_messages.append(handler.compose_command("GetStat7"))
+    outgoing_messages.append(handler.compose_command("GetStat8"))    
+
+    outgoing_messages.append(handler.compose_command("SetShutter", 1))
+    outgoing_messages.append(handler.compose_command("GetShortStatus"))
+    outgoing_messages.append(handler.compose_command("GetStat7"))
+    outgoing_messages.append(handler.compose_command("GetStat8"))    
+    outgoing_messages.append(handler.compose_command("SetShutter", 0))
+    outgoing_messages.append(handler.compose_command("GetShortStatus"))
+    outgoing_messages.append(handler.compose_command("GetStat7"))
+    outgoing_messages.append(handler.compose_command("GetStat8")) 
+
+    outgoing_messages.append(handler.compose_command("LaserStop"))
+    outgoing_messages.append(handler.compose_command("GetShortStatus"))
+    outgoing_messages.append(handler.compose_command("GetStat7"))
+    outgoing_messages.append(handler.compose_command("GetStat8"))     
+ 
+    outgoing_messages.append(handler.compose_command("LaserOff"))
+    outgoing_messages.append(handler.compose_command("GetShortStatus"))
+    outgoing_messages.append(handler.compose_command("GetStat7"))
+    outgoing_messages.append(handler.compose_command("GetStat8"))    
+   
+
+    with open("communications_log.txt", "w") as outfile:
+        for outgoing_message in outgoing_messages:
+            outfile.write("-"*20 + "\n")
+            outfile.write("Sending command:\n")
+            outfile.write(outgoing_message)
+            serial_connection.write(outgoing_message.encode("ASCII"))
+            time.sleep(0.5)
+            reply = serial_connection.read_until("\r")
+            outfile.write("Recieved Reply:\n")            
+            outfile.write(reply.decode("ASCII")+ "\n")
+            print(reply)
+
+
+
 	
