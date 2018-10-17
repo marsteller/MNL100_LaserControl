@@ -29,6 +29,9 @@ class LaserControl(QMainWindow):
         
         self.laser_communication_thread = laser_communication.LaserCommunicationThread(self)
         
+        for port in self.laser_communication_thread.available_comports:
+            self.ui.comboBox.addItem(port.device)
+        
         self.ui.stop_button.clicked.connect(self.laser_communication_thread.Stop)
         self.ui.burst_on_button.clicked.connect(self.laser_communication_thread.BurstOn)
         self.ui.laser_off_button.clicked.connect(self.laser_communication_thread.LaserOff)

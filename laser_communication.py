@@ -6,6 +6,7 @@ Created on Mon Oct 15 16:40:11 2018
 """
 
 import serial
+import serial.tools.list_ports
 from PyQt5.QtCore import (QCoreApplication, QObject, QRunnable, QThread,
                           QThreadPool, pyqtSignal, pyqtSlot)
 import sys
@@ -285,11 +286,14 @@ class LaserCommunicationThread(QThread):
     
     def __init__(self, main_window, com_port="/dev/ttyUSB0"):
         QThread.__init__(self)
+        self.available_comports = list(serial.tools.list_ports.comports())
+        
         
         self.main_window = main_window
         self.recieved_reply_signal.connect(self.process_recieved_message)
         self.update_main_window_signal.connect(self.main_window.display_laser_status)
         
+        self.handler = LaserCommunicationHandler()
         #serial connection parameters
         
         self.baud_rate = 9600
@@ -297,12 +301,59 @@ class LaserCommunicationThread(QThread):
         self.bytesize = 8
         self.stopbits = 1
         self.rtscts = 1
-        """
-        self.serial_connection = serial.Serial(com_port, self.baud_rate, parity=self.parity,
-                                               bytesize=self.bytesize, stopbits=self.stopbits,
-                                              rtscts=self.rtscts)
-        """
-        self.handler = LaserCommunicationHandler()
+        self.write_timeout = 5
+        self.timeout = 5
+        
+        self.used_com_port = None
+        if com_port != None:
+            print("Using specified com port: {}".format(com_port))
+            """
+            self.serial_connection = serial.Serial(com_port, self.baud_rate, parity=self.parity, 
+                                                       bytesize=self.bytesize, stopbits=self.stopbits,
+                                                       rtscts=self.rtscts)
+            """
+            self.used_com_port = com_port
+        else:
+            print("No com port specified, trying to detect Laser...")
+            for port in self.available_comports:
+                print("Now trying com port: {}".format(port.device))
+                try:
+                    self.serial_connection = serial.Serial(port.device, self.baud_rate, parity=self.parity, 
+                                                           bytesize=self.bytesize, stopbits=self.stopbits,
+                                                           rtscts=self.rtscts, timeout=self.timeout, write_timeout=self.write_timeout)
+                    
+                    time.sleep(0.050)
+                    self.serial_connection.reset_input_buffer()
+                    outgoing_message = self.handler.compose_command("GetShortStatus").encode("ASCII")
+                    self.serial_connection.write(outgoing_message)
+                    time.sleep(0.010)
+                    
+                    if self._waiting_bytes() != 0:
+                        recieved_message = self.serial_connection.read_until(self.handler.end_delimiter)
+                        
+                        if "<@!W" in recieved_message:
+                            self.used_com_port = port.device
+                            print("Laser found on com port: {}".format(port.device))
+                        
+                            break
+                        else:
+                            self.serial_connection.close()
+                            print("Nothing found on com port: {}".format(port.device))
+                            time.sleep(0.05)
+                    else:
+                        self.serial_connection.close()
+                        print("Nothing found on com port: {}".format(port.device))
+                        time.sleep(0.05)
+                        
+                except Exception as e:
+                    print(e)
+                    try:
+                        self.serial_connection.close()
+                    except Exception as e2:
+                            print(e2)
+        if self.used_com_port == None:
+            raise serial.SerialException("Laser not found over serial interface") 
+        
         self.serial_connection = DummySerial(self.handler)
         
         self.command_queue = []
@@ -327,7 +378,7 @@ class LaserCommunicationThread(QThread):
             read_timeout_counter = 10
             
             while(self._waiting_bytes() != 0 and read_timeout_counter > 0):
-                recieved_message = self.serial_connection.read_until(self.handler.end_delimiter)
+                recieved_message = self.serial_connection.read_until(self.handler.end_delimiter).decode("ASCII")
                 
                 self.recieved_messages.append(recieved_message)
                 self.recieved_reply_signal.emit(recieved_message)
@@ -340,7 +391,7 @@ class LaserCommunicationThread(QThread):
             if len(self.outgoing_messages) > 0:
                 outgoing_message = self.outgoing_messages.pop(0)
                 
-                self.serial_connection.write(outgoing_message)
+                self.serial_connection.write(outgoing_message.encode("ASCII"))
     
             time.sleep(0.005)
             
@@ -416,9 +467,11 @@ class LaserCommunicationThread(QThread):
             self.CloseShutter()
             
     def QueryStatus(self):
+        self.execute_command("GetStat7")
         self.execute_command("GetStat8")
         
-    
+    def QueryShortStatus(self):
+        self.execute_command("GetShortStatus")
 
 import datetime
 class DummySerial(object):
@@ -446,11 +499,12 @@ class DummySerial(object):
         self.buffer = self.buffer[index:]
         print("Reply:")
         print(reply)
-        return reply
+        return reply.encode("ASCII")
     
     def write(self, out):
         print("Output:")
-        print(out)
+        print(out.decode("ASCII"))
+        out = out.decode("ASCII")
         
         if out == self.handler.compose_command("SetShutter", 1):
             self.shutter_status = 1
