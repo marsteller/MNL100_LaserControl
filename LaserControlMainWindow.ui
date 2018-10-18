@@ -15,29 +15,7 @@
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QGridLayout" name="gridLayout_4">
-    <item row="0" column="0">
-     <widget class="QComboBox" name="comboBox">
-      <property name="font">
-       <font>
-        <pointsize>14</pointsize>
-       </font>
-      </property>
-     </widget>
-    </item>
-    <item row="0" column="1">
-     <spacer name="horizontalSpacer_3">
-      <property name="orientation">
-       <enum>Qt::Horizontal</enum>
-      </property>
-      <property name="sizeHint" stdset="0">
-       <size>
-        <width>492</width>
-        <height>20</height>
-       </size>
-      </property>
-     </spacer>
-    </item>
-    <item row="1" column="0" colspan="2">
+    <item row="1" column="0" colspan="3">
      <widget class="QFrame" name="frame">
       <property name="frameShape">
        <enum>QFrame::StyledPanel</enum>
@@ -46,113 +24,7 @@
        <enum>QFrame::Raised</enum>
       </property>
       <layout class="QGridLayout" name="gridLayout_3">
-       <item row="0" column="0" rowspan="4" colspan="2">
-        <layout class="QGridLayout" name="gridLayout">
-         <item row="0" column="0">
-          <widget class="LedIndicator" name="laser_on_led" native="true"/>
-         </item>
-         <item row="0" column="1">
-          <widget class="QPushButton" name="standby_button">
-           <property name="text">
-            <string>STANDBY</string>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="0">
-          <widget class="LedIndicator" name="repetition_on_led" native="true"/>
-         </item>
-         <item row="1" column="1">
-          <widget class="QPushButton" name="repetition_on_button">
-           <property name="text">
-            <string>REPETITION ON</string>
-           </property>
-          </widget>
-         </item>
-         <item row="2" column="0">
-          <widget class="LedIndicator" name="burst_on_led" native="true"/>
-         </item>
-         <item row="2" column="1">
-          <widget class="QPushButton" name="burst_on_button">
-           <property name="text">
-            <string>BURST</string>
-           </property>
-          </widget>
-         </item>
-         <item row="3" column="0">
-          <widget class="LedIndicator" name="external_trigger_on_led" native="true"/>
-         </item>
-         <item row="3" column="1">
-          <widget class="QPushButton" name="external_trigger_on_button">
-           <property name="text">
-            <string>ExT-TRIGGER</string>
-           </property>
-          </widget>
-         </item>
-        </layout>
-       </item>
-       <item row="0" column="2" rowspan="4" colspan="2">
-        <layout class="QGridLayout" name="gridLayout_2">
-         <item row="0" column="0" colspan="2">
-          <widget class="QPushButton" name="laser_off_button">
-           <property name="text">
-            <string>LASER OFF</string>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="0">
-          <widget class="QPushButton" name="stop_button">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Minimum" vsizetype="MinimumExpanding">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="text">
-            <string>STOP</string>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="1">
-          <layout class="QVBoxLayout" name="verticalLayout">
-           <item>
-            <widget class="QLabel" name="label_2">
-             <property name="text">
-              <string>REP. RATE</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <layout class="QHBoxLayout" name="horizontalLayout">
-             <item>
-              <widget class="QSpinBox" name="repetition_rate_spinBox">
-               <property name="font">
-                <font>
-                 <pointsize>12</pointsize>
-                </font>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QLabel" name="label_5">
-               <property name="text">
-                <string>Hz</string>
-               </property>
-              </widget>
-             </item>
-            </layout>
-           </item>
-           <item>
-            <widget class="QLabel" name="label_4">
-             <property name="text">
-              <string>TextLabel</string>
-             </property>
-            </widget>
-           </item>
-          </layout>
-         </item>
-        </layout>
-       </item>
-       <item row="0" column="5">
+       <item row="0" column="4">
         <layout class="QHBoxLayout" name="horizontalLayout_2">
          <item>
           <widget class="LedIndicator" name="laser_ready_led" native="true"/>
@@ -166,14 +38,14 @@
          </item>
         </layout>
        </item>
-       <item row="0" column="7" rowspan="5">
+       <item row="0" column="6" rowspan="5">
         <widget class="Line" name="line">
          <property name="orientation">
           <enum>Qt::Vertical</enum>
          </property>
         </widget>
        </item>
-       <item row="0" column="8" colspan="4">
+       <item row="0" column="7" colspan="4">
         <widget class="QLabel" name="label">
          <property name="text">
           <string>TEMPERATURE</string>
@@ -183,7 +55,7 @@
          </property>
         </widget>
        </item>
-       <item row="1" column="4">
+       <item row="1" column="3">
         <spacer name="horizontalSpacer_2">
          <property name="orientation">
           <enum>Qt::Horizontal</enum>
@@ -196,14 +68,14 @@
          </property>
         </spacer>
        </item>
-       <item row="1" column="5" colspan="2">
+       <item row="1" column="4">
         <widget class="QLabel" name="label_3">
          <property name="text">
           <string>QUANTITY</string>
          </property>
         </widget>
        </item>
-       <item row="1" column="9" rowspan="4">
+       <item row="1" column="8" rowspan="4">
         <spacer name="verticalSpacer_2">
          <property name="orientation">
           <enum>Qt::Vertical</enum>
@@ -216,7 +88,7 @@
          </property>
         </spacer>
        </item>
-       <item row="1" column="10" rowspan="4">
+       <item row="1" column="9" rowspan="3">
         <widget class="QProgressBar" name="temperature_bar">
          <property name="value">
           <number>24</number>
@@ -226,7 +98,7 @@
          </property>
         </widget>
        </item>
-       <item row="1" column="11" rowspan="4">
+       <item row="1" column="10" rowspan="4">
         <spacer name="verticalSpacer_3">
          <property name="orientation">
           <enum>Qt::Vertical</enum>
@@ -239,7 +111,7 @@
          </property>
         </spacer>
        </item>
-       <item row="2" column="5" colspan="2">
+       <item row="2" column="4" colspan="2">
         <widget class="QSpinBox" name="repetition_quantity_spinBox">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
@@ -258,9 +130,12 @@
            <pointsize>12</pointsize>
           </font>
          </property>
+         <property name="maximum">
+          <number>65000</number>
+         </property>
         </widget>
        </item>
-       <item row="3" column="6">
+       <item row="3" column="5">
         <spacer name="verticalSpacer">
          <property name="orientation">
           <enum>Qt::Vertical</enum>
@@ -273,45 +148,45 @@
          </property>
         </spacer>
        </item>
-       <item row="4" column="5" colspan="2">
+       <item row="4" column="4" colspan="2">
         <widget class="QProgressBar" name="repetition_bar">
          <property name="value">
           <number>24</number>
          </property>
         </widget>
        </item>
-       <item row="5" column="0" colspan="12">
+       <item row="5" column="0" colspan="11">
         <widget class="Line" name="line_2">
          <property name="orientation">
           <enum>Qt::Horizontal</enum>
          </property>
         </widget>
        </item>
-       <item row="6" column="0" rowspan="2">
+       <item row="6" column="0" rowspan="3">
         <widget class="LedIndicator" name="shutter_status_led" native="true"/>
        </item>
-       <item row="6" column="1" rowspan="2" colspan="2">
-        <widget class="QPushButton" name="toggle_shutter_button">
-         <property name="text">
-          <string>TOGGLE SHUTTER</string>
-         </property>
-        </widget>
-       </item>
-       <item row="6" column="5" rowspan="2" colspan="2">
+       <item row="6" column="4" rowspan="3" colspan="2">
         <widget class="QLabel" name="label_7">
          <property name="text">
           <string>Shutter Status:</string>
          </property>
         </widget>
        </item>
-       <item row="6" column="8" rowspan="2" colspan="2">
-        <widget class="QLabel" name="label_8">
+       <item row="6" column="7" rowspan="3" colspan="2">
+        <widget class="QLabel" name="shutter_status_label">
          <property name="text">
           <string>closed</string>
          </property>
         </widget>
        </item>
-       <item row="7" column="3" colspan="2">
+       <item row="7" column="1" rowspan="2">
+        <widget class="QPushButton" name="toggle_shutter_button">
+         <property name="text">
+          <string>TOGGLE SHUTTER</string>
+         </property>
+        </widget>
+       </item>
+       <item row="8" column="2" colspan="2">
         <spacer name="horizontalSpacer">
          <property name="orientation">
           <enum>Qt::Horizontal</enum>
@@ -324,7 +199,149 @@
          </property>
         </spacer>
        </item>
+       <item row="0" column="0" rowspan="5" colspan="3">
+        <layout class="QHBoxLayout" name="horizontalLayout_3">
+         <item>
+          <layout class="QGridLayout" name="gridLayout">
+           <item row="0" column="0">
+            <widget class="LedIndicator" name="laser_on_led" native="true"/>
+           </item>
+           <item row="0" column="1">
+            <widget class="QPushButton" name="standby_button">
+             <property name="text">
+              <string>STANDBY</string>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="0">
+            <widget class="LedIndicator" name="repetition_on_led" native="true"/>
+           </item>
+           <item row="1" column="1">
+            <widget class="QPushButton" name="repetition_on_button">
+             <property name="text">
+              <string>REPETITION ON</string>
+             </property>
+            </widget>
+           </item>
+           <item row="2" column="0">
+            <widget class="LedIndicator" name="burst_on_led" native="true"/>
+           </item>
+           <item row="2" column="1">
+            <widget class="QPushButton" name="burst_on_button">
+             <property name="text">
+              <string>BURST</string>
+             </property>
+            </widget>
+           </item>
+           <item row="3" column="0">
+            <widget class="LedIndicator" name="external_trigger_on_led" native="true"/>
+           </item>
+           <item row="3" column="1">
+            <widget class="QPushButton" name="external_trigger_on_button">
+             <property name="text">
+              <string>ExT-TRIGGER</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <layout class="QGridLayout" name="gridLayout_2">
+           <item row="0" column="0" colspan="2">
+            <widget class="QPushButton" name="laser_off_button">
+             <property name="text">
+              <string>LASER OFF</string>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="0">
+            <widget class="QPushButton" name="stop_button">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Minimum" vsizetype="MinimumExpanding">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="text">
+              <string>STOP</string>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="1">
+            <layout class="QVBoxLayout" name="verticalLayout">
+             <item>
+              <widget class="QLabel" name="label_2">
+               <property name="text">
+                <string>REP. RATE</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <layout class="QHBoxLayout" name="horizontalLayout">
+               <item>
+                <widget class="QSpinBox" name="repetition_rate_spinBox">
+                 <property name="font">
+                  <font>
+                   <pointsize>12</pointsize>
+                  </font>
+                 </property>
+                 <property name="maximum">
+                  <number>60</number>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QLabel" name="label_5">
+                 <property name="text">
+                  <string>Hz</string>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </item>
+             <item>
+              <widget class="QLabel" name="total_shots_label">
+               <property name="text">
+                <string>Total shots:</string>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </item>
+          </layout>
+         </item>
+        </layout>
+       </item>
       </layout>
+     </widget>
+    </item>
+    <item row="0" column="0">
+     <widget class="QComboBox" name="comboBox">
+      <property name="font">
+       <font>
+        <pointsize>14</pointsize>
+       </font>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="2">
+     <spacer name="horizontalSpacer_3">
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>492</width>
+        <height>20</height>
+       </size>
+      </property>
+     </spacer>
+    </item>
+    <item row="0" column="1">
+     <widget class="QLabel" name="connection_label">
+      <property name="text">
+       <string>Connected to device</string>
+      </property>
      </widget>
     </item>
    </layout>
