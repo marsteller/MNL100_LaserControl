@@ -6,40 +6,50 @@ Created on Tue Oct 16 00:51:44 2018
 """
 
 import sys
-from LedIndicatorWidget import *
+#from LedIndicatorWidget import *
 import LaserControlMainWindow
 import laser_communication
 from PyQt5.QtWidgets import QApplication, QMainWindow, QErrorMessage
 
-from PyQt5.QtCore import (QCoreApplication, QObject, QRunnable, QThread,
-                          QThreadPool, pyqtSignal, pyqtSlot, Qt)
+from PyQt5.QtCore import  pyqtSignal
 import time
 import logging
+import serial.tools.list_ports
 
 class LaserControl(QMainWindow):
     
     set_repetition_rate_signal = pyqtSignal(int)
     set_repetition_quantity_signal = pyqtSignal(int)
     
-    def __init__(self):
+    def __init__(self, app):
         super(self.__class__, self).__init__()
         logging.info("Initializing LaserControl GUI")
-
+        self.app = app
         self.ui = LaserControlMainWindow.Ui_MainWindow()
 
         self.ui.setupUi(self)
-        
-        
-        logging.info("Looking for COM ports")
-        for port in self.laser_communication_thread.available_comports:
-            self.ui.comboBox.addItem(port.device)
+        self.setFixedSize(self.size())
         
         self.error_window = None
+        self.ui.redetect_com_button.clicked.connect(self.redetect_laser)
+        
+        self.connect_to_laser()
+        if self.error_window != None:
+            self.error_window.showMessage(self.error_window.message)
+        self.error_window = None
+
+    def connect_to_laser(self):
+        logging.info("Looking for COM ports")
+        available_comports = list(serial.tools.list_ports.comports())
+        for port in available_comports:
+            self.ui.comboBox.addItem(port.device)
+        
         
         self.ui.connection_label.setText("Connecting to laser...")
-        try:
-            self.laser_communication_thread = laser_communication.LaserCommunicationThread(self, debug=False)
+        self.app.processEvents()
         
+        try:
+            self.laser_communication_thread = laser_communication.LaserCommunicationThread(self, debug=True)
         
             
             logging.info("Connecting GUI signals")
@@ -54,13 +64,19 @@ class LaserControl(QMainWindow):
             self.set_repetition_rate_signal.connect(self.laser_communication_thread.setRepetitionRate)
             self.ui.repetition_quantity_spinBox.editingFinished.connect(self.repetition_quantity_changed)
             self.set_repetition_quantity_signal.connect(self.laser_communication_thread.setRepetitionQuantity)
+            
 
             logging.info("Starting laser communication thread.")
             self.laser_communication_thread.start()
         except Exception as e:
             self.error_window = QErrorMessage(self)
             self.error_window.message = str(e)
-        
+            
+    def redetect_laser(self):
+        self.connect_to_laser()
+        if self.error_window != None:
+            self.error_window.showMessage(self.error_window.message)
+        self.error_window = None
 
     def closeEvent(self, event):
         try:
@@ -112,10 +128,9 @@ class LaserControl(QMainWindow):
 
 if __name__ == "__main__":
     
-    logging.basicConfig(filename="laser_control_log.log", format='%(asctime)s %(message)s')
+    logging.basicConfig(filename="laser_control_log.log", format='%(threadName)s %(message)s')
     app = QApplication(sys.argv)
-    form = LaserControl()
+    form = LaserControl(app)
     form.show()
-    form.error_window.showMessage(form.error_window.message)
     
-    sys.exit(app.exec_())
+    app.exec()

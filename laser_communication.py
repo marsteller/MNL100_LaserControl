@@ -7,11 +7,9 @@ Created on Mon Oct 15 16:40:11 2018
 
 import serial
 import serial.tools.list_ports
-from PyQt5.QtCore import (QCoreApplication, QObject, QRunnable, QThread,
-                          QThreadPool, pyqtSignal, pyqtSlot)
+from PyQt5.QtCore import (QThread, pyqtSignal)
 import sys
 import time
-import numpy as np
 import logging
 
 python_version = float(sys.version_info.major)
@@ -383,7 +381,7 @@ class LaserCommunicationThread(QThread):
         
         
         logging.debug("Setting up serial connection parameters")
-        self.main_window.ui.connection_label.setText("Setting serial connection parameters")
+        self.set_connection_label("Setting serial connection parameters")
         self.baud_rate = 9600
         self.parity = serial.PARITY_NONE
         self.bytesize = 8
@@ -397,14 +395,17 @@ class LaserCommunicationThread(QThread):
         if not debug:
             self.used_com_port = None
             if com_port != None:
+                
+                self.set_connection_label("Trying to connect using specified com port: {}".format(com_port))
                 logging.info("Trying to connect using specified com port: {}".format(com_port))
                 try:
                     self.serial_connection = serial.Serial(com_port, self.baud_rate, parity=self.parity, 
                                                            bytesize=self.bytesize, stopbits=self.stopbits,
                                                            rtscts=self.rtscts, timeout=self.timeout, write_timeout=self.write_timeout)
-                    self.main_window.ui.connection_label.setText("Connected to laser on COM port: {}".format(com_port))
+                    self.set_connection_label("Connected to laser on COM port: {}".format(com_port))
                     self.used_com_port = com_port
                 except serial.SerialException:
+                    self.set_connection_label("No serial connection possible on specified COM port")
                     logging.critical("No serial connection possible on specified COM port")
                     default_failed = True
     
@@ -414,6 +415,7 @@ class LaserCommunicationThread(QThread):
                 else:
                     logging.info("No COM port specified, trying to detect Laser...")
                 for port in self.available_comports:
+                    self.set_connection_label("Now trying COM port: {}".format(port.device))
                     logging.info("Now trying COM port: {}".format(port.device))
                     try:
                         self.serial_connection = serial.Serial(port.device, self.baud_rate, parity=self.parity, 
@@ -434,17 +436,22 @@ class LaserCommunicationThread(QThread):
                             
                             if "<@!W" in recieved_message:
                                 self.used_com_port = port.device
+                                self.set_connection_label("Laser found on COM port: {}".format(port.device))
                                 logging.info("Laser found on COM port: {}".format(port.device))
                             
-                                self.main_window.ui.connection_label.setText("Connected to laser on COM port: {}".format(port.device))
+                                self.set_connection_label("Connected to laser on COM port: {}".format(port.device))
+                                logging.info("Connected to laser on COM port: {}".format(port.device))
+                                self.main_window.app.processEvents()
                                 break
                             else:
                                 self.serial_connection.close()
+                                self.set_connection_label("Nothing found on COM port: {}".format(port.device))
                                 logging.info("Nothing found on COM port: {}".format(port.device))
                                 time.sleep(0.05)
                         else:
                             self.serial_connection.close()
-                            print("Nothing found on COM port: {}".format(port.device))
+                            self.set_connection_label("Nothing found on COM port: {}".format(port.device))
+                            logging.info("Nothing found on COM port: {}".format(port.device))
                             time.sleep(0.05)
                             
                     except Exception as e:
@@ -456,11 +463,11 @@ class LaserCommunicationThread(QThread):
                             logging.critical("Could not close erroneous serial connection. Maybe wasn't opened")
                                 
             if self.used_com_port == None:
-                self.main_window.ui.connection_label.setText("Could not detect laser")
+                self.set_connection_label("Could not detect laser")
                 logging.critical("Laser not found over serial interface")
                 raise serial.SerialException("Laser not found over serial interface") 
         else:
-            self.main_window.ui.connection_label.setText("Connected to DummySerial")
+            self.set_connection_label("Connected to DummySerial")
             logging.debug("Connected to DummySerial")
             self.serial_connection = DummySerial(self.handler)
             
@@ -532,6 +539,10 @@ class LaserCommunicationThread(QThread):
         
         
         logging.info("Communication Thread ended")
+    
+    def set_connection_label(self, string):
+        self.main_window.ui.connection_label.setText(string)
+        self.main_window.app.processEvents()
     
     def _waiting_bytes(self):
         global python_version
