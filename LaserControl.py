@@ -41,6 +41,7 @@ class LaserControl(QMainWindow):
     def connect_to_laser(self):
         logging.info("Looking for COM ports")
         available_comports = list(serial.tools.list_ports.comports())
+        self.ui.comboBox.clear()
         for port in available_comports:
             self.ui.comboBox.addItem(port.device)
         
