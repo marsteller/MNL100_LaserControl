@@ -50,7 +50,7 @@ class LaserControl(QMainWindow):
         self.app.processEvents()
         
         try:
-            self.laser_communication_thread = laser_communication.LaserCommunicationThread(self, debug=True)
+            self.laser_communication_thread = laser_communication.LaserCommunicationThread(self, debug=False)
         
             
             logging.info("Connecting GUI signals")
