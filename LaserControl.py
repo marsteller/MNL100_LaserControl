@@ -45,7 +45,10 @@ class LaserControl(QMainWindow):
         for port in available_comports:
             self.ui.comboBox.addItem(port.device)
         
-        self.repetition_editable = False
+        self.display_repetition_quantity = True
+        self.display_repetition_frequency = True
+        
+        
         self.ui.connection_label.setText("Connecting to laser...")
         self.app.processEvents()
         
@@ -93,21 +96,17 @@ class LaserControl(QMainWindow):
             pass
         logging.info("Exiting now.")
         event.accept()
-    
-    def disable_repetition_set(self):
-        self.repetition_editable = False
-
-    def enable_repetition_set(self):
-        self.repetition_editable = True
         
     def repetition_rate_changed(self):
         logging.debug("GUI: Chaning laser repetition rate to: {}".format(self.ui.repetition_rate_spinBox.value()))
         self.set_repetition_rate_signal.emit(self.ui.repetition_rate_spinBox.value())
+        self.display_repetition_frequency = True
         
         
     def repetition_quantity_changed(self):
         logging.debug("GUI: Chaning laser repetition quantity to: {}".format(self.ui.repetition_quantity_spinBox.value()))
         self.set_repetition_quantity_signal.emit(self.ui.repetition_quantity_spinBox.value())
+        self.display_repetition_quantity = True
         
         
     def display_laser_status(self):
@@ -128,10 +127,13 @@ class LaserControl(QMainWindow):
         
         self.ui.temperature_bar.setValue(self.laser_communication_thread.handler.temperature1)
         
-        if self.repetition_editable:
-            print("here")
+        if self.display_repetition_quantity == True:
             self.ui.repetition_quantity_spinBox.setValue(self.laser_communication_thread.handler.quantity)
-        self.ui.repetition_rate_spinBox.setValue(self.laser_communication_thread.handler.frequency)
+            self.display_repetition_quantity = False
+        if self.display_repetition_frequency == True:
+            self.ui.repetition_rate_spinBox.setValue(self.laser_communication_thread.handler.frequency)
+            self.display_repetition_frequency = False
+            
         self.ui.repetition_bar.setValue(self.laser_communication_thread.handler.quantity_counter)
         
         self.ui.total_shots_label.setText("Total shots:\n{}".format(self.laser_communication_thread.handler.shot_counter_value))
