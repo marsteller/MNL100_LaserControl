@@ -233,7 +233,9 @@ class LaserCommunicationHandler(object):
             return response_type
         else:
             logging.critical("Unknown response type encountered.")
-            raise IOError()
+            logging.critical("Original Reply:")
+            logging.critical("{}".format(reply.encode("ASCII")))
+            #raise IOError()
         
     def _interprete_GetShortStatus(self, reply):
         cleaned_reply = reply[1:]
@@ -253,8 +255,10 @@ class LaserCommunicationHandler(object):
         self.quantity = int(cleaned_reply[6:10],16)
         self.frequency = int(cleaned_reply[10:12],16)
         self.hv = int(cleaned_reply[12:14],16)
-        self.energy = int(cleaned_reply[18:22],16)
-        
+        try:
+            self.energy = int(cleaned_reply[18:22],16)
+        except Exception:
+            pass
         self.flag_byte_1 = self._flag_byte_decoder(self.flag_byte_1)
         self.flag_byte_3 = self._flag_byte_decoder(self.flag_byte_3)
         

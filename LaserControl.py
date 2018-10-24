@@ -47,6 +47,9 @@ class LaserControl(QMainWindow):
         
         self.display_repetition_quantity = True
         self.display_repetition_frequency = True
+        self.last_transmitted_quantity = -1.0
+        self.last_transmitted_frequency = -1.0
+
         
         
         self.ui.connection_label.setText("Connecting to laser...")
@@ -100,13 +103,11 @@ class LaserControl(QMainWindow):
     def repetition_rate_changed(self):
         logging.debug("GUI: Chaning laser repetition rate to: {}".format(self.ui.repetition_rate_spinBox.value()))
         self.set_repetition_rate_signal.emit(self.ui.repetition_rate_spinBox.value())
-        self.display_repetition_frequency = True
         
         
     def repetition_quantity_changed(self):
         logging.debug("GUI: Chaning laser repetition quantity to: {}".format(self.ui.repetition_quantity_spinBox.value()))
         self.set_repetition_quantity_signal.emit(self.ui.repetition_quantity_spinBox.value())
-        self.display_repetition_quantity = True
         
         
     def display_laser_status(self):
@@ -127,12 +128,13 @@ class LaserControl(QMainWindow):
         
         self.ui.temperature_bar.setValue(self.laser_communication_thread.handler.temperature1)
         
-        if self.display_repetition_quantity == True:
+        if self.last_transmitted_quantity != self.laser_communication_thread.handler.quantity:
             self.ui.repetition_quantity_spinBox.setValue(self.laser_communication_thread.handler.quantity)
-            self.display_repetition_quantity = False
-        if self.display_repetition_frequency == True:
+            self.last_transmitted_quantity = self.laser_communication_thread.handler.quantity
+
+        if self.last_transmitted_frequency != self.laser_communication_thread.handler.frequency:
             self.ui.repetition_rate_spinBox.setValue(self.laser_communication_thread.handler.frequency)
-            self.display_repetition_frequency = False
+            self.last_transmitted_frequency = self.laser_communication_thread.handler.frequency
             
         self.ui.repetition_bar.setValue(self.laser_communication_thread.handler.quantity_counter)
         
