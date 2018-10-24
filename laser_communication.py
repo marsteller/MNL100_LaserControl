@@ -261,10 +261,10 @@ class LaserCommunicationHandler(object):
         self.shutter_open = self.flag_byte_1[0]
         self.ready = self.flag_byte_1[2]
         self.standby = self.flag_byte_1[3]
-        self.mode_off = self.flag_byte_1[4]
-        self.repetition_on = self.flag_byte_1[7]
-        self.burst_on = self.flag_byte_1[6]
-        self.external_trigger_on = self.flag_byte_1[5]
+        self.mode_off = self.flag_byte_1[7]
+        self.repetition_on = self.flag_byte_1[4]
+        self.burst_on = self.flag_byte_1[5]
+        self.external_trigger_on = self.flag_byte_1[6]
         
         
         self.service_mode_activated = self.flag_byte_3[0]
@@ -602,7 +602,7 @@ class LaserCommunicationThread(QThread):
         
     
     def ToggleShutter(self):
-        if self.handler.shutter_open:
+        if not self.handler.shutter_open:
             self.OpenShutter()
         else:
             self.CloseShutter()
